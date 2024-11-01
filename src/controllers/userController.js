@@ -10,9 +10,13 @@ exports.registration = async (req, res) => {
             status: "fail",
             msg: "Email already exists",
         })
-        
+
         let user = await userModel.create(reqbody);
-        res.status(201).json({ message: "User registered successfully", data: user });
+        res.status(201).send({
+            status: "success",
+            msg: "User registered successfully",
+            user: user
+        })
     } catch (error) {
         return res.status(500).json({
             message: "Failed to register user",
