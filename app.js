@@ -6,7 +6,6 @@ const hpp = require('hpp');
 const cors = require("cors")
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
-const path = require("path");
 require('dotenv').config()
 
 
@@ -69,9 +68,9 @@ mongoose.connect(dbPort).then((res)=>{
 
 // api file import
 
-// const routes = require("./src/routes/api")
+const routes = require("./src/routes/api")
 
-// app.use("/api/v1",routes)
+app.use("/api/v1",routes)
 
 
 
