@@ -21,6 +21,7 @@ router.put("/border-update/:borderId", borderController.borderUpdate);
 router.delete("/border-delete/:borderId", borderController.borderDelete);
 router.get("/single-border/:borderId", borderController.singleBorder);
 router.get("/all-border/:pageNo/:perPage/:searchValue" , borderController.allBorder);
+router.get("/border-name", borderController.borderName ); 
 
 // rice entry api
 

@@ -213,3 +213,26 @@ exports.allBorder = async (req, res) => {
         });
     }
 };
+
+exports.borderName = async (req,res)=>{
+    try {
+        let data = await borderModel.aggregate([
+            {
+                $project : {
+                    name : 1
+                }
+            }
+        ])
+        res.status(200).send({
+            msg: "Border name fetched successfully",
+            status: "success",
+            data: data
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "fail",
+            msg: "Failed to fetch border name",
+            error: error.toString()
+        })
+    }
+}
