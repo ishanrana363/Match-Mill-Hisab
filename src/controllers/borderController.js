@@ -1,6 +1,6 @@
 const borderModel = require("../models/borderModel");
 
-exports.borderCreate = async (req,res)=>{
+exports.borderCreate = async (req, res) => {
     try {
         let reqbody = req.body;
         let border = await borderModel.create(reqbody);
@@ -9,7 +9,7 @@ exports.borderCreate = async (req,res)=>{
             msg: "Border created successfully",
             data: border
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             status: "fail",
@@ -19,12 +19,12 @@ exports.borderCreate = async (req,res)=>{
     }
 };
 
-exports.borderUpdate = async (req,res)=>{
+exports.borderUpdate = async (req, res) => {
     try {
         let borderId = req.params.borderId;
         let reqbody = req.body;
-        let border = await borderModel.findByIdAndUpdate(borderId, reqbody, {new: true});
-        if(!border){
+        let border = await borderModel.findByIdAndUpdate(borderId, reqbody, { new: true });
+        if (!border) {
             return res.status(404).json({
                 status: "fail",
                 msg: "Border not found"
@@ -35,7 +35,7 @@ exports.borderUpdate = async (req,res)=>{
             msg: "Border updated successfully",
             data: border
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             status: "fail",
@@ -45,11 +45,11 @@ exports.borderUpdate = async (req,res)=>{
     }
 };
 
-exports.borderDelete = async (req,res)=>{
+exports.borderDelete = async (req, res) => {
     try {
         let borderId = req.params.borderId;
         let border = await borderModel.findByIdAndDelete(borderId);
-        if(!border){
+        if (!border) {
             return res.status(404).json({
                 status: "fail",
                 msg: "Border not found"
@@ -59,7 +59,7 @@ exports.borderDelete = async (req,res)=>{
             status: "success",
             msg: "Border deleted successfully"
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             status: "fail",
@@ -69,11 +69,11 @@ exports.borderDelete = async (req,res)=>{
     }
 };
 
-exports.singleBorder = async (req, res)=>{
+exports.singleBorder = async (req, res) => {
     try {
         let borderId = req.params.borderId;
         let border = await borderModel.findById(borderId);
-        if(!border){
+        if (!border) {
             return res.status(404).json({
                 status: "fail",
                 msg: "Border not found"
@@ -84,7 +84,7 @@ exports.singleBorder = async (req, res)=>{
             msg: "Border found successfully",
             data: border
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             status: "fail",
@@ -94,7 +94,7 @@ exports.singleBorder = async (req, res)=>{
     }
 };
 
-allBorderList = async (req, res)=>{
+allBorderList = async (req, res) => {
     try {
 
         let pageNo = Number(req.params.pageNo);
@@ -160,6 +160,54 @@ singleBlog = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             msg: "Failed to fetch blog",
+            status: "fail",
+            error: error.toString()
+        });
+    }
+};
+exports.allBorder = async (req, res) => {
+    try {
+
+        let pageNo = Number(req.params.pageNo);
+
+        let perPage = Number(req.params.perPage);
+
+        let searchValue = req.params.searchValue ? String(req.params.searchValue) : "";
+
+        let skipRow = (pageNo - 1) * perPage;
+
+        let data;
+
+        if (searchValue !== "0" && searchValue !== "") {
+            let searchRegex = { "$regex": searchValue, "$options": "i" };
+            let searchQuery = { $or: [{ name: searchRegex }, { phone: searchRegex }, { email: searchRegex }] };
+            data = await borderModel.aggregate([
+                {
+                    $facet: {
+                        Total: [{ $match: searchQuery }, { $count: "count" }],
+                        Rows: [{ $match: searchQuery }, { $skip: skipRow }, { $limit: perPage }]
+                    }
+                }
+            ]);
+        } else {
+            data = await borderModel.aggregate([
+                {
+                    $facet: {
+                        Total: [{ $count: "count" }],
+                        Rows: [{ $skip: skipRow }, { $limit: perPage }]
+                    }
+                }
+            ]);
+        }
+
+        res.status(200).send({
+            msg: "Border fetched successfully",
+            status: "success",
+            data: data
+        });
+    } catch (error) {
+        res.status(500).send({
+            msg: "Failed to fetch border",
             status: "fail",
             error: error.toString()
         });
