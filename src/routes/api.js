@@ -15,6 +15,8 @@ router.post("/login", userController.login);
 // border api
 
 router.post("/create-border",isLogIn,isAdmin,borderController.borderCreate);
+router.put("/border-update/:borderId", borderController.borderUpdate);
+router.delete("/border-delete/:borderId", borderController.borderDelete)
 // router.get("/getBorder", borderController.getBorder);
 // router.get("/getAllBorders", borderController.getAllBorders);
 // router.put("/updateBorder", borderController.updateBorder);
