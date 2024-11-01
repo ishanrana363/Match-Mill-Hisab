@@ -7,6 +7,10 @@ const borderSchema = new Schema({
         type: String,
         required: true
     },
+    img : {
+        type: String,
+        default: 'https://via.placeholder.com/150'
+    },
     email : {
         type: String,
         required: true,
