@@ -80,10 +80,19 @@ exports.findOneBorderTotalEtatenMill = async (req, res) => {
             return total;
         }, 0);
 
+        const totalMill = totalRiceData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.mill);
+            }
+            return total;
+        }, 0);
+
         res.status(200).send({
             status: "success",
             data: totalRicePot,
-            dataTow: borderData
+            dataThree : parseFloat(totalMill),
+            dataTow: borderData,
         });
 
     } catch (err) {
