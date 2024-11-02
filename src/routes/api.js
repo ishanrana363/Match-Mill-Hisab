@@ -9,6 +9,8 @@ const userController = require("../controllers/userController");
 const borderController = require("../controllers/borderController");
 // rice entry controller
 const riceEntryController = require("../controllers/riceEntryController");
+// daily rice entry controller
+const dailyRiceController  = require("../controllers/dailyRiceController");
 
 // user related api
 router.post("/registration", userController.registration);
@@ -27,6 +29,14 @@ router.get("/border-name", borderController.borderName );
 
 router.post("/insert-rice-entry", riceEntryController.insertRiceEntry);
 router.post("/total-rice-border", riceEntryController.findOneBorderTotalRiceGiven);
+
+// daily rice entry releted api 
+
+router.post("/insert-daily-rice-entry", dailyRiceController.insertDailyRiceEntry);
+// router.get("/total-rice-given-border/:borderId", dailyRiceController.totalRiceGivenBorder);
+// router.get("/total-rice-given-day/:borderId/:date", dailyRiceController.totalRiceGivenDay);
+// router.get("/total-rice-given-month/:borderId/:month", dailyRiceController.totalRiceGivenMonth);
+// router.get("/total-rice-given-year/:borderId/:year", dailyRiceController.totalRiceGivenYear);
 
 
 
