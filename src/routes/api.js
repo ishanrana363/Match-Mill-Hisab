@@ -28,8 +28,6 @@ router.get("/border-name", borderController.borderName );
 router.post("/insert-rice-entry", riceEntryController.insertRiceEntry);
 router.post("/total-rice-border", riceEntryController.findOneBorderTotalRiceGiven);
 
-// router.get("/rice-entries/:borderId", riceEntryController.riceEntries);
-// router.put("/rice-entry-update/:riceEntryId", riceEntryController.riceEntryUpdate);
-// router.delete("/rice-entry-delete/:riceEntryId", riceEntryController.riceEntryDelete);
+
 
 module.exports = router
