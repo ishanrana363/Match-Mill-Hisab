@@ -8,6 +8,9 @@ const riceSchema = new Schema({
     totalPot : {
         type : String,
         default : 0
+    },
+    date : {
+        type : Date,
     }
     
 },{timestamps: true,versionKey:false});
