@@ -33,10 +33,7 @@ router.post("/total-rice-border", riceEntryController.findOneBorderTotalRiceGive
 // daily rice entry releted api 
 
 router.post("/insert-daily-rice-entry", dailyRiceController.insertDailyRiceEntry);
-// router.get("/total-rice-given-border/:borderId", dailyRiceController.totalRiceGivenBorder);
-// router.get("/total-rice-given-day/:borderId/:date", dailyRiceController.totalRiceGivenDay);
-// router.get("/total-rice-given-month/:borderId/:month", dailyRiceController.totalRiceGivenMonth);
-// router.get("/total-rice-given-year/:borderId/:year", dailyRiceController.totalRiceGivenYear);
+router.post("/total-eaten-rice-border", dailyRiceController.findOneBorderTotalEatenRice)
 
 
 

@@ -20,6 +20,6 @@ const dailyRiceSchema = new Schema(
     { timestamps: true, versionKey: false }
 );
 
-const dailyRiceModel = model('DailyRice', dailyRiceSchema); // Changed to singular form for model naming convention
+const dailyRiceEntryModel = model('DailyRice', dailyRiceSchema); // Changed to singular form for model naming convention
 
-module.exports = dailyRiceModel;
+module.exports = dailyRiceEntryModel;
