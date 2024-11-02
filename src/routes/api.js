@@ -26,6 +26,7 @@ router.get("/border-name", borderController.borderName );
 // rice entry api
 
 router.post("/insert-rice-entry", riceEntryController.insertRiceEntry);
+router.get("/total-rice-border", riceEntryController.findOneBorderTotalRiceGiven);
 
 // router.get("/rice-entries/:borderId", riceEntryController.riceEntries);
 // router.put("/rice-entry-update/:riceEntryId", riceEntryController.riceEntryUpdate);
