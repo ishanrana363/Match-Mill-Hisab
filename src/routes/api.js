@@ -48,6 +48,7 @@ router.post("/total-mill-calculation", vegetableEntryController.findOneBorderTot
 
 router.post("/insert-daily-bazar", dailyBazarController.dailyBazarInsert);
 router.post("/total-bazar-calculation", dailyBazarController.totalCalculationBazar);
+router.post("/total-bazar-list", dailyBazarController.totalBazarList);
 
 // router.post("/total-bazar-border", dailyBazarController.findOneBorderTotalBazarGiven);
 
