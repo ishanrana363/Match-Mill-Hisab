@@ -82,7 +82,7 @@ exports.findOneBorderTotalRiceGiven = async (req, res) => {
         res.status(200).send({
             status: "success",
             data: totalRicePot,
-            dateTow: borderData
+            dataTow: borderData
         });
 
     } catch (err) {
