@@ -56,7 +56,7 @@ exports.findOneBorderTotalEatenRice = async (req, res) => {
                     img: "$borderData.img",
                 },
                 pot: 1,
-                date: 1,
+                entry_date: 1,
             }
         };
 
