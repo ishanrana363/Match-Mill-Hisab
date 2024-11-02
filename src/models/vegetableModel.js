@@ -10,6 +10,9 @@ const vegetableSchema = new Schema({
     mill : {
         type : String,
     },
+    millPrice : {
+        type : String,
+    },
     date : {
         type : Date,
     }
