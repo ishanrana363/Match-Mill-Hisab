@@ -74,7 +74,7 @@ exports.findOneBorderTotalRiceGiven = async (req, res) => {
         const totalRicePot = totalRiceData.reduce((total, record) => {
             const recordDate = new Date(record.date);
             if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
-                return total + parseInt(record.totalPot);
+                return total + parseFloat(record.totalPot);
             }
             return total;
         }, 0);

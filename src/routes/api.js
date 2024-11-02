@@ -40,7 +40,7 @@ router.post("/total-eaten-rice-border", dailyRiceController.findOneBorderTotalEa
 // vegetable entry api
 
 router.post("/insert-vegetable-entry", vegetableEntryController.vegetableCreate);
-// router.post("/total-vegetable-border", vegetableEntryController.findOneBorderTotalVegetableGiven);
+router.post("/total-mill-calculation", vegetableEntryController.findOneBorderTotalEtatenMill);
 
 
 
