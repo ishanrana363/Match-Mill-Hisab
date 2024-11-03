@@ -15,6 +15,8 @@ const dailyRiceController  = require("../controllers/dailyRiceController");
 const vegetableEntryController = require("../controllers/vegetableEntryController");
 // daily bazar controller
 const dailyBazarController = require("../controllers/dailyBazarController");
+// money entry controller
+const moneyEntryController = require("../controllers/moneyEntryController");
 
 // user related api
 router.post("/registration", userController.registration);
@@ -50,7 +52,11 @@ router.post("/insert-daily-bazar", dailyBazarController.dailyBazarInsert);
 router.post("/total-bazar-calculation", dailyBazarController.totalCalculationBazar);
 router.post("/total-bazar-list", dailyBazarController.totalBazarList);
 
-// router.post("/total-bazar-border", dailyBazarController.findOneBorderTotalBazarGiven);
+// money entry api
+
+router.post("/money-entry", moneyEntryController.insertMoneyEntry);
+
+// router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
 
 
 
