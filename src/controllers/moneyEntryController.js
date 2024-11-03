@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const moneyEntryModel = require("../models/moneyEntryModel");
+const vegetablesModel = require("../models/vegetableModel");
 
 exports.insertMoneyEntry = async (req, res) => {
     try {
@@ -55,7 +56,7 @@ exports.moneyCalculation = async (req, res) => {
                     img: "$borderData.img",
                 },
                 totalMoney: 1,
-                date : 1,
+                date: 1,
             }
         };
 
@@ -91,3 +92,109 @@ exports.moneyCalculation = async (req, res) => {
         });
     }
 };
+
+exports.moneyCalculationby30Days = async (req, res) => {
+    const { borderId, startDate, endDate } = req.body;
+
+    const matchStage = {
+        $match: {
+            borderId: new mongoose.Types.ObjectId(borderId),
+            date: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            }
+
+        }
+    };
+
+    try {
+        // Fetching all rice entry records for the specified borderId
+        let totalRiceData = await moneyEntryModel.find({ borderId: borderId });
+        const vegetableData = await vegetablesModel.find({borderId: borderId});
+
+        const joinWithBorderModel = {
+            $lookup: {
+                from: "borders",
+                localField: "borderId",
+                foreignField: "_id",
+                as: "borderData"
+            }
+        };
+        // unwind borderData
+        const unwindBorderData = {
+            $unwind: "$borderData"
+        };
+
+        const projectFields = {
+            $project: {
+                borderData: {
+                    name: "$borderData.name",
+                    img: "$borderData.img",
+                },
+                totalMoney: 1,
+                date: 1,
+            }
+        };
+
+        const borderData = await moneyEntryModel.aggregate([
+            matchStage,
+            joinWithBorderModel,
+            unwindBorderData,
+            projectFields
+        ]);
+        const vegetableProjection = {
+            $project: {
+                borderData: {
+                    name: "$borderData.name",
+                    img: "$borderData.img",
+                },
+                millPrice: 1,
+                date: 1,
+                mill: 1
+            }
+        }
+        const borderVegetableData = await vegetablesModel.aggregate([
+            matchStage,
+            joinWithBorderModel,
+            unwindBorderData,
+            vegetableProjection
+        ]);
+
+        // Filtering records based on the date range and calculating total pots
+        const totalRicePot = totalRiceData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.totalMoney);
+            }
+            return total;
+        }, 0);
+        console.log(totalRicePot);
+        const totalVegetableData = vegetableData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.millPrice);
+            }
+            return total;
+        }, 0);
+
+        console.log(totalVegetableData);
+
+        const money = totalRicePot-totalVegetableData
+
+
+        res.status(200).send({
+            status: "success",
+            takaDisa : parseFloat(totalRicePot), // টাকা দিচ্ছে
+            takaPaba: money, // টাকা পাবেন 
+            takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
+            millKayarDate : borderVegetableData // বডার ভেজিটেবল ইতিহাস
+        });
+
+    } catch (err) {
+        return res.status(500).send({
+            status: "error",
+            message: err.message,
+        });
+    }
+
+}

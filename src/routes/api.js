@@ -57,6 +57,8 @@ router.post("/total-bazar-list", dailyBazarController.totalBazarList);
 router.post("/money-entry", moneyEntryController.insertMoneyEntry);
 router.post("/money-calculation", moneyEntryController.moneyCalculation);
 
+router.post("/money-calculation-30days",moneyEntryController.moneyCalculationby30Days);
+
 // router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
 
 
