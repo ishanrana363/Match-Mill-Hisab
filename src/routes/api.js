@@ -55,6 +55,7 @@ router.post("/total-bazar-list", dailyBazarController.totalBazarList);
 // money entry api
 
 router.post("/money-entry", moneyEntryController.insertMoneyEntry);
+router.post("/money-calculation", moneyEntryController.moneyCalculation);
 
 // router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
 
