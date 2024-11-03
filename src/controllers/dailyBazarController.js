@@ -110,7 +110,9 @@ exports.totalBazarList = async (req, res) => {
 
     try {
         // Fetching all rice entry records for the specified borderId
-        let totalBararData = await dailyBazarModel.find();
+        let totalBazarData = await dailyBazarModel.find();
+
+        console.log(totalBazarData);
 
         const joinWithBorderModel = {
             $lookup: {
@@ -148,7 +150,7 @@ exports.totalBazarList = async (req, res) => {
         ])
 
         // Filtering records based on the date range and calculating total pots
-        const totalBazarMoney = totalBararData.reduce((total, record) => {
+        const totalBazarMoney = totalBazarData.reduce((total, record) => {
             const recordDate = new Date(record.date);
             if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
                 return total + parseInt(record.price);
