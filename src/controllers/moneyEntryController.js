@@ -168,7 +168,7 @@ exports.moneyCalculationby30Days = async (req, res) => {
             }
             return total;
         }, 0);
-        console.log(totalRicePot);
+
         const totalVegetableData = vegetableData.reduce((total, record) => {
             const recordDate = new Date(record.date);
             if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
@@ -177,13 +177,22 @@ exports.moneyCalculationby30Days = async (req, res) => {
             return total;
         }, 0);
 
-        console.log(totalVegetableData);
+        const totalMill = vegetableData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.mill);
+            }
+            return total;
+        }, 0);
 
+
+        
         const money = totalRicePot-totalVegetableData
 
 
         res.status(200).send({
             status: "success",
+            totalMill : totalMill, // মোট মিল
             takaDisa : parseFloat(totalRicePot), // টাকা দিচ্ছে
             takaPaba: money, // টাকা পাবেন 
             takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
