@@ -293,7 +293,7 @@ exports.riceCalculationby30Days = async (req, res) => {
                     name: "$borderData.name",
                     img: "$borderData.img",
                 },
-                totalMoney: 1,
+                pot: 1,
                 date: 1,
             }
         };
@@ -302,7 +302,7 @@ exports.riceCalculationby30Days = async (req, res) => {
             matchStage,
             joinWithBorderModel,
             unwindBorderData,
-            // projectFields
+            projectFields
         ]);
 
 
@@ -318,7 +318,7 @@ exports.riceCalculationby30Days = async (req, res) => {
             totalEatenRiceOneBorder: totalEatenRiceOneBorder,
             totalGivenRiceOneBorder: totalGivenRiceOneBorder,
             chalPabane: chalPabane,
-            borderData: borderData,
+            borderDataList: borderData,
             qrImg: qrImageUrl
         });
 
