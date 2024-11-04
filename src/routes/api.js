@@ -59,6 +59,8 @@ router.post("/money-calculation", moneyEntryController.moneyCalculation);
 
 router.post("/money-calculation-30days",moneyEntryController.moneyCalculationby30Days);
 
+router.post("/rice-calculation-30days", moneyEntryController.riceCalculationby30Days);
+
 // router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
 
 

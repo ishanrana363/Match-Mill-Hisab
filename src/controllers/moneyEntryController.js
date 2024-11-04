@@ -2,6 +2,8 @@ const { default: mongoose } = require("mongoose");
 const moneyEntryModel = require("../models/moneyEntryModel");
 const vegetablesModel = require("../models/vegetableModel");
 const QRCode = require('qrcode');
+const riceEntryModel = require("../models/riceEnteryModel");
+const dailyRiceEntryModel = require("../models/dailyRiceEntryModel");
 
 
 exports.insertMoneyEntry = async (req, res) => {
@@ -224,3 +226,106 @@ exports.moneyCalculationby30Days = async (req, res) => {
     }
 
 }
+
+
+exports.riceCalculationby30Days = async (req, res) => {
+
+    try {
+        const { borderId, startDate, endDate } = req.body;
+
+
+        const matchStage = {
+            $match: {
+                borderId: new mongoose.Types.ObjectId(borderId),
+                date: {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+
+            }
+        };
+
+        // rice calculation border eaten rice
+
+        const riceData = await dailyRiceEntryModel.find({ borderId: borderId });
+
+
+        const totalEatenRiceOneBorder = riceData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.pot);
+            }
+            return total;
+        }, 0);
+
+
+
+        // total rice calculation border given rice
+
+        const givenRiceData = await riceEntryModel.find({ borderId: borderId });
+
+        const totalGivenRiceOneBorder = givenRiceData.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.totalPot);
+            }
+            return total;
+        }, 0);
+
+        let chalPabane = (totalGivenRiceOneBorder) - (totalEatenRiceOneBorder);
+
+        const joinWithBorderModel = {
+            $lookup: {
+                from: "borders",
+                localField: "borderId",
+                foreignField: "_id",
+                as: "borderData"
+            }
+        };
+
+        const unwindBorderData = {
+            $unwind: "$borderData"
+        };
+
+        const projectFields = {
+            $project: {
+                borderData: {
+                    name: "$borderData.name",
+                    img: "$borderData.img",
+                },
+                totalMoney: 1,
+                date: 1,
+            }
+        };
+
+        const borderData = await dailyRiceEntryModel.aggregate([
+            matchStage,
+            joinWithBorderModel,
+            unwindBorderData,
+            projectFields
+        ]);
+
+
+
+        const qrImageUrl = await QRCode.toDataURL(
+            `মোট চাল দিচ্ছেন: ${totalGivenRiceOneBorder} পট , মোট চাল খাইচ্ছেন : ${totalEatenRiceOneBorder} পট , ${chalPabane > 0 ? `আপনি চাল পাবেন: ${chalPabane} পট ` : `আপনার কাছে চাল পাবে: ${Math.abs(money)} পট `}`
+        );
+
+
+
+        res.status(200).json({
+            status: "success",
+            totalEatenRiceOneBorder: totalEatenRiceOneBorder,
+            totalGivenRiceOneBorder: totalGivenRiceOneBorder,
+            chalPabane: chalPabane,
+            borderData: borderData,
+            qrImg: qrImageUrl
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: error.message
+        })
+    }
+};

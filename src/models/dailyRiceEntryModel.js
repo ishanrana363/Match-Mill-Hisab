@@ -12,7 +12,7 @@ const dailyRiceSchema = new Schema(
             type: String, 
             default: 0,
         },
-        entry_date: {
+        date: {
             type: Date,
             
         },
