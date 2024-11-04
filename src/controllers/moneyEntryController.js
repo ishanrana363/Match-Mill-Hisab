@@ -112,7 +112,7 @@ exports.moneyCalculationby30Days = async (req, res) => {
     try {
         // Fetching all rice entry records for the specified borderId
         let totalRiceData = await moneyEntryModel.find({ borderId: borderId });
-        const vegetableData = await vegetablesModel.find({borderId: borderId});
+        const vegetableData = await vegetablesModel.find({ borderId: borderId });
 
         const joinWithBorderModel = {
             $lookup: {
@@ -162,7 +162,7 @@ exports.moneyCalculationby30Days = async (req, res) => {
             vegetableProjection
         ]);
 
-        
+
 
         // Filtering records based on the date range and calculating total pots
         const totalRicePot = totalRiceData.reduce((total, record) => {
@@ -197,20 +197,23 @@ exports.moneyCalculationby30Days = async (req, res) => {
             return total;
         }, 0);
 
-        
-        const money = totalRicePot-totalVegetableData
 
-        const qrImageUrl = await QRCode.toDataURL(`মোট মিল : ${totalMill} মোট মিল খরছ  ${totalMillMoney} মোট টাকা খরছ হইচ্ছে : ${totalRicePot} টাকা পাবেন : ${money} ${borderData}  `);
+        const money = totalRicePot - totalVegetableData
+
+        const qrImageUrl = await QRCode.toDataURL(
+            `মোট মিল: ${totalMill} টা , মোট মিল খরচ: ${totalMillMoney} টাকা , আপনি টাকা দিচ্ছেন: ${totalRicePot} টাকা , ${money > 0 ? `আপনি টাকা পাবেন: ${money}` : `আপনার কাছে টাকা পাবে: ${money}`}`
+        );
+
 
 
         res.status(200).send({
             status: "success",
-            totalMill : totalMill, // মোট মিল
-            millKhorajTka : parseFloat(totalMillMoney), // মোট মিল খরছ
-            takaDisa : parseFloat(totalRicePot), // টাকা দিচ্ছে
+            totalMill: totalMill, // মোট মিল
+            millKhorajTka: parseFloat(totalMillMoney), // মোট মিল খরছ
+            takaDisa: parseFloat(totalRicePot), // টাকা দিচ্ছে
             takaPaba: money, // টাকা পাবেন 
             takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
-            qrImg : qrImageUrl
+            qrImg: qrImageUrl
         });
 
     } catch (err) {
