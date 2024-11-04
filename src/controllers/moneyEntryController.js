@@ -1,6 +1,8 @@
 const { default: mongoose } = require("mongoose");
 const moneyEntryModel = require("../models/moneyEntryModel");
 const vegetablesModel = require("../models/vegetableModel");
+const QRCode = require('qrcode');
+
 
 exports.insertMoneyEntry = async (req, res) => {
     try {
@@ -196,6 +198,8 @@ exports.moneyCalculationby30Days = async (req, res) => {
         
         const money = totalRicePot-totalVegetableData
 
+        const qrImageUrl = await QRCode.toDataURL(`${totalMill} ${totalMillMoney} ${totalRicePot} ${money} ${borderData} ${borderVegetableData} `);
+
 
         res.status(200).send({
             status: "success",
@@ -204,7 +208,8 @@ exports.moneyCalculationby30Days = async (req, res) => {
             takaDisa : parseFloat(totalRicePot), // টাকা দিচ্ছে
             takaPaba: money, // টাকা পাবেন 
             takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
-            millKayarDate : borderVegetableData // বডার ভেজিটেবল ইতিহাস
+            millKayarDate : borderVegetableData, // বডার ভেজিটেবল ইতিহাস
+            qrImg : qrImageUrl
         });
 
     } catch (err) {
