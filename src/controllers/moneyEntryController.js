@@ -201,7 +201,7 @@ exports.moneyCalculationby30Days = async (req, res) => {
         const money = totalRicePot - totalVegetableData
 
         const qrImageUrl = await QRCode.toDataURL(
-            `মোট মিল: ${totalMill} টা , মোট মিল খরচ: ${totalMillMoney} টাকা , আপনি টাকা দিচ্ছেন: ${totalRicePot} টাকা , ${money > 0 ? `আপনি টাকা পাবেন: ${money}` : `আপনার কাছে টাকা পাবে: ${money}`}`
+            `মোট মিল: ${totalMill} টা , মোট মিল খরচ: ${totalMillMoney} টাকা , আপনি টাকা দিচ্ছেন: ${totalRicePot} টাকা , ${money > 0 ? `আপনি টাকা পাবেন: ${money}` : `আপনার কাছে টাকা পাবে: ${Math.abs(money)}`}`
         );
 
 
