@@ -162,6 +162,8 @@ exports.moneyCalculationby30Days = async (req, res) => {
             vegetableProjection
         ]);
 
+        
+
         // Filtering records based on the date range and calculating total pots
         const totalRicePot = totalRiceData.reduce((total, record) => {
             const recordDate = new Date(record.date);
@@ -198,7 +200,7 @@ exports.moneyCalculationby30Days = async (req, res) => {
         
         const money = totalRicePot-totalVegetableData
 
-        const qrImageUrl = await QRCode.toDataURL(`${totalMill} ${totalMillMoney} ${totalRicePot} ${money} ${borderData} ${borderVegetableData} `);
+        const qrImageUrl = await QRCode.toDataURL(`মোট মিল : ${totalMill} মোট মিল খরছ  ${totalMillMoney} মোট টাকা খরছ হইচ্ছে : ${totalRicePot} টাকা পাবেন : ${money} ${borderData}  `);
 
 
         res.status(200).send({
@@ -208,7 +210,6 @@ exports.moneyCalculationby30Days = async (req, res) => {
             takaDisa : parseFloat(totalRicePot), // টাকা দিচ্ছে
             takaPaba: money, // টাকা পাবেন 
             takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
-            millKayarDate : borderVegetableData, // বডার ভেজিটেবল ইতিহাস
             qrImg : qrImageUrl
         });
 
