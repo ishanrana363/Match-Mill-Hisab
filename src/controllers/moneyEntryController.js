@@ -302,7 +302,7 @@ exports.riceCalculationby30Days = async (req, res) => {
             matchStage,
             joinWithBorderModel,
             unwindBorderData,
-            projectFields
+            // projectFields
         ]);
 
 
