@@ -94,3 +94,33 @@ exports.updateUser = async (req, res) => {
         });
     }
 };
+
+exports.userProfile = async (req, res) => {
+    try {
+        let id = req.headers.id;
+        let user = await userModel.findById(id);
+        
+        // Check if the user was found
+        if (!user) {
+            return res.status(404).send({
+                status: "fail",
+                msg: "User not found",
+            });
+        }
+
+        // If the user is found, send success response
+        return res.status(200).send({
+            status: "success",
+            msg: "User fetched successfully",
+            data: user
+        });
+
+    } catch (error) {
+        // Handle any errors that occur
+        return res.status(500).json({
+            status: "fail",
+            message: "Failed to fetch user",
+            error: error.toString()
+        });
+    }
+};
