@@ -22,7 +22,7 @@ const moneyEntryController = require("../controllers/moneyEntryController");
 router.post("/registration", userController.registration);
 router.post("/login", userController.login);
 router.put("/user-update/:userId", userController.updateUser);
-router.get("/user-profile", userController.userProfile);
+router.get("/user-profile", isLogIn,isAdmin, userController.userProfile);
 
 // border api
 

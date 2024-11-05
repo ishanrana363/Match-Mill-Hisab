@@ -97,7 +97,8 @@ exports.updateUser = async (req, res) => {
 
 exports.userProfile = async (req, res) => {
     try {
-        let id = req.headers.id;
+        let id = req.headers._id;
+        console.log(id);
         let user = await userModel.findById(id);
         
         // Check if the user was found
