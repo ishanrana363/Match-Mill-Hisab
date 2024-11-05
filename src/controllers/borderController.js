@@ -1,5 +1,7 @@
 const borderModel = require("../models/borderModel");
 
+const formerBorderModel = require("../models/formerBorderModel");
+
 exports.borderCreate = async (req, res) => {
     try {
         let reqbody = req.body;
@@ -55,9 +57,39 @@ exports.borderDelete = async (req, res) => {
                 msg: "Border not found"
             });
         }
+
+        
+
+        console.log(border);
+
+        const name = border.name;
+        const img = border.img;
+        const email = border.email;
+        const phone = border.phone;
+        const address = border.address;
+        const father_name = border.father_name;
+        const mother_name = border.mother_name;
+        const dob = border.dob;
+        const father_phone_number = border.father_phone_number;
+        const institute_name = border.institute_name;
+        const payload = {
+            name,
+            img,
+            email,
+            phone,
+            address,
+            father_name,
+            mother_name,
+            dob,
+            father_phone_number,
+            institute_name
+        }
+
+        await formerBorderModel.create(payload);        
+
         res.status(200).json({
             status: "success",
-            msg: "Border deleted successfully"
+            msg: "Border deleted successfully",
         });
 
     } catch (error) {

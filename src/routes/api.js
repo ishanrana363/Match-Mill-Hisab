@@ -17,12 +17,15 @@ const millController = require("../controllers/millController");
 const dailyBazarController = require("../controllers/dailyBazarController");
 // money entry controller
 const moneyEntryController = require("../controllers/moneyEntryController");
+// former border controller
+const formerBorderController = require("../controllers/formerBorderController");
 
 // user related api
 router.post("/registration", userController.registration);
 router.post("/login", userController.login);
 router.put("/user-update",isLogIn,isAdmin, userController.updateUser);
 router.get("/user-profile", isLogIn,isAdmin, userController.userProfile);
+
 
 // border api
 
@@ -64,6 +67,10 @@ router.post("/money-calculation-30days",moneyEntryController.moneyCalculationby3
 router.post("/rice-calculation-30days", moneyEntryController.riceCalculationby30Days);
 
 // router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
+
+// former border api
+
+router.get("/all-former-border",formerBorderController.allFormerBorder);
 
 
 
