@@ -62,3 +62,35 @@ exports.login = async (req, res) => {
         })
     }
 };
+
+exports.updateUser = async (req, res) => {
+    try {
+        let userId = req.params.userId;
+        let reqbody = req.body;
+
+        // Update the user with the provided data
+        let user = await userModel.findByIdAndUpdate(userId, reqbody, { new: true });
+        
+        // Check if user was found
+        if (!user) {
+            return res.status(404).json({
+                status: "fail",
+                msg: "User not found"
+            });
+        }
+
+        // If user is found and updated, send success response
+        return res.status(200).json({
+            status: "success",
+            msg: "User updated successfully",
+            data: user
+        });
+
+    } catch (error) {
+        // Handle any errors that occur
+        return res.status(500).json({
+            status: "fail",
+            message: error.toString()
+        });
+    }
+};
