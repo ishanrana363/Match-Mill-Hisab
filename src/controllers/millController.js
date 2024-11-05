@@ -35,7 +35,7 @@ exports.findOneBorderTotalEtatenMill = async (req, res) => {
 
     try {
         // Fetching all rice entry records for the specified borderId
-        let totalRiceData = await vegetableModel.find({ borderId: borderId });
+        let totalRiceData = await millModel.find({ borderId: borderId });
 
         const joinWithBorderModel = {
             $lookup: {
@@ -62,7 +62,7 @@ exports.findOneBorderTotalEtatenMill = async (req, res) => {
             }
         };
 
-        const borderData = await vegetableModel.aggregate([
+        const borderData = await millModel.aggregate([
             matchStage,
             joinWithBorderModel,
             unwindBorderData,
