@@ -65,11 +65,13 @@ exports.login = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        let userId = req.params.userId;
         let reqbody = req.body;
+        let userId = req.headers._id
+
+        let filter = {_id : userId}
 
         // Update the user with the provided data
-        let user = await userModel.findByIdAndUpdate(userId, reqbody, { new: true });
+        let user = await userModel.findByIdAndUpdate(filter,reqbody, { new: true });
         
         // Check if user was found
         if (!user) {

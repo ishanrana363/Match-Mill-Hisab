@@ -21,7 +21,7 @@ const moneyEntryController = require("../controllers/moneyEntryController");
 // user related api
 router.post("/registration", userController.registration);
 router.post("/login", userController.login);
-router.put("/user-update/:userId", userController.updateUser);
+router.put("/user-update",isLogIn,isAdmin, userController.updateUser);
 router.get("/user-profile", isLogIn,isAdmin, userController.userProfile);
 
 // border api
