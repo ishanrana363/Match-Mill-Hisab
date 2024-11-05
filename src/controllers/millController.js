@@ -1,10 +1,10 @@
 const { default: mongoose } = require("mongoose");
-const vegetableModel = require("../models/vegetableModel");
+const millModel = require("../models/millModel");
 
-exports.vegetableCreate = async (req, res) => {
+exports.millUpload = async (req, res) => {
     try {
         let reqbody = req.body;
-        let vegetable = await vegetableModel.create(reqbody);
+        let vegetable = await millModel.create(reqbody);
         res.status(201).json({
             status: "success",
             msg: "Vegetable created successfully",

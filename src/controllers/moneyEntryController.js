@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const moneyEntryModel = require("../models/moneyEntryModel");
-const vegetablesModel = require("../models/vegetableModel");
+const millModel = require("../models/millModel");
 const QRCode = require('qrcode');
 const riceEntryModel = require("../models/riceEnteryModel");
 const dailyRiceEntryModel = require("../models/dailyRiceEntryModel");
@@ -107,14 +107,42 @@ exports.moneyCalculationby30Days = async (req, res) => {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate)
             }
-
         }
     };
 
     try {
-        // Fetching all rice entry records for the specified borderId
-        let totalRiceData = await moneyEntryModel.find({ borderId: borderId });
-        const vegetableData = await vegetablesModel.find({ borderId: borderId });
+
+        // total mill calculaitons for one border
+
+        const millCalculation = await millModel.find({borderId : borderId});
+
+
+        const totalMillOneEatenBorder = millCalculation.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.mill);
+            }
+        }, 0);
+
+        const totalMillCost = millCalculation.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.millPrice);
+            }
+        }, 0);
+
+        // money calculation one border 
+
+        const totalMoney =await moneyEntryModel.find({borderId : borderId});
+
+        const totalMoneyOneBorderGiven = totalMoney.reduce((total, record) => {
+            const recordDate = new Date(record.date);
+            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
+                return total + parseFloat(record.totalMoney);
+            }
+        }, 0);
+
+        const takaPaba = (totalMoneyOneBorderGiven) - (totalMillCost);
 
         const joinWithBorderModel = {
             $lookup: {
@@ -124,99 +152,47 @@ exports.moneyCalculationby30Days = async (req, res) => {
                 as: "borderData"
             }
         };
+
         // unwind borderData
         const unwindBorderData = {
             $unwind: "$borderData"
         };
-
         const projectFields = {
             $project: {
                 borderData: {
                     name: "$borderData.name",
                     img: "$borderData.img",
                 },
-                totalMoney: 1,
-                date: 1,
+                mill: 1,
+                millPrice: 1,
+                date : 1
             }
         };
 
-        const borderData = await moneyEntryModel.aggregate([
+        const borderDataList = await millModel.aggregate([
             matchStage,
             joinWithBorderModel,
             unwindBorderData,
             projectFields
         ]);
-        const vegetableProjection = {
-            $project: {
-                borderData: {
-                    name: "$borderData.name",
-                    img: "$borderData.img",
-                },
-                millPrice: 1,
-                date: 1,
-                mill: 1
-            }
-        }
-        const borderVegetableData = await vegetablesModel.aggregate([
-            matchStage,
-            joinWithBorderModel,
-            unwindBorderData,
-            vegetableProjection
-        ]);
 
 
-
-        // Filtering records based on the date range and calculating total pots
-        const totalRicePot = totalRiceData.reduce((total, record) => {
-            const recordDate = new Date(record.date);
-            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
-                return total + parseFloat(record.totalMoney);
-            }
-            return total;
-        }, 0);
-
-        const totalVegetableData = vegetableData.reduce((total, record) => {
-            const recordDate = new Date(record.date);
-            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
-                return total + parseFloat(record.millPrice);
-            }
-            return total;
-        }, 0);
-
-        const totalMill = vegetableData.reduce((total, record) => {
-            const recordDate = new Date(record.date);
-            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
-                return total + parseFloat(record.mill);
-            }
-            return total;
-        }, 0);
-
-        const totalMillMoney = vegetableData.reduce((total, record) => {
-            const recordDate = new Date(record.date);
-            if (recordDate >= new Date(startDate) && recordDate <= new Date(endDate)) {
-                return total + parseFloat(record.millPrice);
-            }
-            return total;
-        }, 0);
-
-
-        const money = totalRicePot - totalVegetableData
 
         const qrImageUrl = await QRCode.toDataURL(
-            `মোট মিল: ${totalMill} টা , মোট মিল খরচ: ${totalMillMoney} টাকা , আপনি টাকা দিচ্ছেন: ${totalRicePot} টাকা , ${money > 0 ? `আপনি টাকা পাবেন: ${money}` : `আপনার কাছে টাকা পাবে: ${Math.abs(money)}`}`
+            `মোট মিল: ${totalMillOneEatenBorder} টা , মোট মিল খরচ: ${totalMillCost} টাকা , আপনি টাকা দিচ্ছেন: ${totalMoneyOneBorderGiven} টাকা , ${takaPaba > 0 ? `আপনি টাকা পাবেন: ${takaPaba}` : `আপনার কাছে টাকা পাবে: ${Math.abs(takaPaba)}`}`
         );
 
 
-
-        res.status(200).send({
-            status: "success",
-            totalMill: totalMill, // মোট মিল
-            millKhorajTka: parseFloat(totalMillMoney), // মোট মিল খরছ
-            takaDisa: parseFloat(totalRicePot), // টাকা দিচ্ছে
-            takaPaba: money, // টাকা পাবেন 
-            takaDayarDate: borderData, // বডার টাকা দেওয়ার ইতিহাস
-            qrImg: qrImageUrl
-        });
+        res.status(200).json({
+            status: 'success',
+            totalMillEatenOneBorder: totalMillOneEatenBorder,
+            totalMillCost : totalMillCost,
+            totalMoneyOneBorderGiven : totalMoneyOneBorderGiven,
+            takaPaba : takaPaba,
+            qrImageUrl : qrImageUrl,
+            data : borderDataList
+        })
+        
 
     } catch (err) {
         return res.status(500).send({

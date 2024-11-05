@@ -11,8 +11,8 @@ const borderController = require("../controllers/borderController");
 const riceEntryController = require("../controllers/riceEntryController");
 // daily rice entry controller
 const dailyRiceController  = require("../controllers/dailyRiceController");
-// vegetable entry controller
-const vegetableEntryController = require("../controllers/vegetableEntryController");
+// mill entry controller
+const millController = require("../controllers/millController");
 // daily bazar controller
 const dailyBazarController = require("../controllers/dailyBazarController");
 // money entry controller
@@ -41,10 +41,10 @@ router.post("/total-rice-border", riceEntryController.findOneBorderTotalRiceGive
 router.post("/insert-daily-rice-entry", dailyRiceController.insertDailyRiceEntry);
 router.post("/total-eaten-rice-border", dailyRiceController.findOneBorderTotalEatenRice);
 
-// vegetable entry api
+// mill entry api
 
-router.post("/insert-vegetable-entry", vegetableEntryController.vegetableCreate);
-router.post("/total-mill-calculation", vegetableEntryController.findOneBorderTotalEtatenMill);
+router.post("/mill-upload", millController.millUpload );
+router.post("/total-mill-calculation", millController.findOneBorderTotalEtatenMill);
 
 // daily bazar api
 
