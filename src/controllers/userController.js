@@ -225,13 +225,10 @@ exports.userStatusUpdate = async (req,res) => {
 exports.userDelete = async (req, res) => {
     try {
         let id = req.params.id;
-        let userId = req.headers._id;
-        console.log(userId);
         let isDisable = false;
         
         let filter = {
             _id: id,
-            _id : userId,
             isDisable: isDisable
         };
         let user = await userModel.findByIdAndUpdate(filter, { isDisable: true }, { new: true });
