@@ -241,7 +241,7 @@ exports.userDelete = async (req, res) => {
             _id: id,
             isDisable: isDisable
         };
-        let user = await userModel.findByIdAndUpdate(filter, { isDisable: true }, { new: true });
+        let user = await userModel.findByIdAndUpdate(filter, { isDisable: true,token:null}, { new: true });
         if (!user) {
             return res.status(404).json({
                 status: "fail",
