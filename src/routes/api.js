@@ -28,6 +28,7 @@ router.get("/user-profile", isLogIn,isAdmin, userController.userProfile);
 router.get("/user-list/:pageNo/:perPage/:searchValue", isLogIn,isAdmin, userController.userList);
 router.put("/status-update/:userId", isLogIn,isAdmin, userController.userStatusUpdate);
 router.put(`/user/delete/:id`, isLogIn,isAdmin, userController.userDelete);
+router.get("/disable-user/:pageNo/:perPage/:searchValue", isLogIn, isAdmin, userController.disableUserList);
 
 
 // border api

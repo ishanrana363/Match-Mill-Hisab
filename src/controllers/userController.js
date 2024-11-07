@@ -36,10 +36,17 @@ exports.login = async (req, res) => {
 
         const user = await userModel.findOne({ email: email });
 
+
         if (!user) {
             return res.status(404).send({
                 status: "fail",
                 message: "User not found"
+            });
+        }
+        if(user.isDisable){
+            return res.status(403).json({
+                status: "fail",
+                msg: "Your account is disabled. Please contact authority",
             });
         }
         let matchPassword = bcrypt.compareSync(password, user.password);
@@ -51,10 +58,12 @@ exports.login = async (req, res) => {
         }
         const key = process.env.SECRET_KEY;
         const token = tokenCreate({user}, key, "10d" );
+        await userModel.updateOne({email : email},{token: token},{new:true});
         return res.status(200).json({
             status: "success",
             token: token,
         });
+        
     } catch (error) {
         return res.status(500).send({
             status: "fail",
@@ -68,7 +77,7 @@ exports.updateUser = async (req, res) => {
         let reqbody = req.body;
         let userId = req.headers._id
 
-        let filter = {_id : userId}
+        let filter = {_id : userId,isDisable : false}
 
         // Update the user with the provided data
         let user = await userModel.findByIdAndUpdate(filter,reqbody, { new: true });
@@ -196,7 +205,8 @@ exports.userStatusUpdate = async (req,res) => {
         
         let filter = {
             _id: id,
-            _id : userId
+            _id : userId,
+            isDisable : false
         };
         
         let user = await userModel.findByIdAndUpdate(filter, { role: status }, { new: true });
@@ -247,6 +257,65 @@ exports.userDelete = async (req, res) => {
         return res.status(500).json({
             status: "fail",
             message: "Failed to delete user",
+            error: error.toString()
+        });
+    }
+};
+
+exports.disableUserList = async (req, res) => {
+    try {
+
+        let pageNo = Number(req.params.pageNo);
+
+        let perPage = Number(req.params.perPage);
+
+        let searchValue = req.params.searchValue ? String(req.params.searchValue) : "";
+
+        let skipRow = (pageNo - 1) * perPage;
+
+        let data;
+
+        if (searchValue !== "0" && searchValue !== "") {
+            let searchRegex = { "$regex": searchValue, "$options": "i" };
+            let searchQuery = { $or: [{ username: searchRegex }, { phone: searchRegex }, { email: searchRegex }] };
+            data = await userModel.aggregate([
+                {
+                    $match : {
+                        isDisable : true,
+                    }
+                },
+                {
+                    $facet: {
+                        Total: [{ $match: searchQuery }, { $count: "count" }],
+                        Rows: [{ $match: searchQuery }, { $skip: skipRow }, { $limit: perPage }]
+                    }
+                }
+            ]);
+        } else {
+            data = await userModel.aggregate([
+                {
+                    $match : {
+                        isDisable : true,
+                    }
+                },
+                {
+                    $facet: {
+                        Total: [{ $count: "count" }],
+                        Rows: [{ $skip: skipRow }, { $limit: perPage }]
+                    }
+                }
+            ]);
+        }
+
+        res.status(200).send({
+            msg: "User fetched successfully",
+            status: "success",
+            data: data
+        });
+    } catch (error) {
+        res.status(500).send({
+            msg: "Failed to fetch border",
+            status: "fail",
             error: error.toString()
         });
     }

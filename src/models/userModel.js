@@ -47,6 +47,10 @@ const userSchema = new Schema({
     isDisable : {
         type: Boolean,
         default: false
+    },
+    token : {
+        type: String,
+        default: null
     }
 
 }, { timestamps: true, versionKey: false });
