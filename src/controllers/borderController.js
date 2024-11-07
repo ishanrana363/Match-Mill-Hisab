@@ -58,10 +58,6 @@ exports.borderDelete = async (req, res) => {
             });
         }
 
-        
-
-        console.log(border);
-
         const name = border.name;
         const img = border.img;
         const email = border.email;

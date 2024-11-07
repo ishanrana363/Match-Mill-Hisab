@@ -37,7 +37,7 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'border','user'],
+        enum: ['admin', 'border','super-admin','user'],
         default: 'user'
     },
     address: {

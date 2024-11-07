@@ -25,6 +25,7 @@ router.post("/registration", userController.registration);
 router.post("/login", userController.login);
 router.put("/user-update",isLogIn,isAdmin, userController.updateUser);
 router.get("/user-profile", isLogIn,isAdmin, userController.userProfile);
+router.get("/user-list/:pageNo/:perPage/:searchValue", isLogIn,isAdmin, userController.userList);
 
 
 // border api
