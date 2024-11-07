@@ -177,12 +177,37 @@ exports.userList = async (req, res) => {
     }
 };
 
-// exports.userStatusUpdate = async (req,res) => {
+exports.userStatusUpdate = async (req,res) => {
+    try {
 
-//     try {
-//         let id = req.headers._id;
-//         let status = req.body.status;
-//     } catch (error) {
+        let id = req.headers._id;
+        let status = req.body.role;
+        let userId = req.params.userId;
         
-//     }
-// };
+        let filter = {
+            _id: id,
+            _id : userId
+        };
+        
+        let user = await userModel.findByIdAndUpdate(filter, { role: status }, { new: true });
+        
+        if (!user) {
+            return res.status(404).json({
+                status: "fail",
+                msg: "User not found"
+            });
+        }
+        return res.status(200).json({
+            status: "success",
+            msg: "User status updated successfully",
+            data: user
+        });
+    
+    } catch (error) {
+        return res.status(500).json({
+            status: "fail",
+            message: "Failed to update user status",
+            error: error.toString()
+        })
+    }
+};
