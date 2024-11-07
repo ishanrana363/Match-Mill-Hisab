@@ -26,7 +26,7 @@ exports.registration = async (req, res) => {
             error: error.message
         })
     }
-}
+};
 
 exports.login = async (req, res) => {
     try {
@@ -146,6 +146,11 @@ exports.userList = async (req, res) => {
             let searchQuery = { $or: [{ username: searchRegex }, { phone: searchRegex }, { email: searchRegex }] };
             data = await userModel.aggregate([
                 {
+                    $match : {
+                        isDisable : false,
+                    }
+                },
+                {
                     $facet: {
                         Total: [{ $match: searchQuery }, { $count: "count" }],
                         Rows: [{ $match: searchQuery }, { $skip: skipRow }, { $limit: perPage }]
@@ -154,6 +159,11 @@ exports.userList = async (req, res) => {
             ]);
         } else {
             data = await userModel.aggregate([
+                {
+                    $match : {
+                        isDisable : false,
+                    }
+                },
                 {
                     $facet: {
                         Total: [{ $count: "count" }],
@@ -209,5 +219,38 @@ exports.userStatusUpdate = async (req,res) => {
             message: "Failed to update user status",
             error: error.toString()
         })
+    }
+};
+
+exports.userDelete = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let userId = req.headers._id;
+        console.log(userId);
+        let isDisable = false;
+        
+        let filter = {
+            _id: id,
+            _id : userId,
+            isDisable: isDisable
+        };
+        let user = await userModel.findByIdAndUpdate(filter, { isDisable: true }, { new: true });
+        if (!user) {
+            return res.status(404).json({
+                status: "fail",
+                msg: "User not found"
+            });
+        }
+        return res.status(200).json({
+            status: "success",
+            msg: "User deleted successfully",
+            data: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "fail",
+            message: "Failed to delete user",
+            error: error.toString()
+        });
     }
 };

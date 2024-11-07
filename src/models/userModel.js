@@ -43,6 +43,10 @@ const userSchema = new Schema({
     address: {
         type: String,
         required: true
+    },
+    isDisable : {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true, versionKey: false });
