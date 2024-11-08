@@ -1,6 +1,7 @@
 const SendEmailUtility = require("../helper/emailHelper");
 const otpModel = require("../models/otpModel");
 const userModel = require("../models/userModel");
+const bcrypy = require("bcrypt")
 
 exports.sendMail = async (req, res) => {
     const { email } = req.body;
@@ -65,5 +66,46 @@ exports.verifyOtp = async (req, res) => {
             status: "fail",
             msg: "Something went wrong"
         })
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { password, email, otp } = req.body;
+
+    const statusUpdate = 0;
+    const otpCode = 0;
+    const saltRounds = 10;
+
+    try {
+        const hashedPassword = bcrypy.hashSync(password, saltRounds);
+
+        const update = { password: hashedPassword };
+
+        let otpData = await otpModel.findOne({ email: email, otp: otp });
+
+        if (otpData) {
+
+            await userModel.updateOne({ email:email}, update);
+
+            await otpModel.updateOne({ email:email }, { $set: { otp: otpCode, status: statusUpdate } });
+
+            return res.status(200).json({
+                status: "success",
+                msg: "Password reset successfully",
+            });
+        } else {
+            return res.status(404).json({
+                status: "fail",
+                msg: "Otp not found"
+            })
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: "fail",
+            msg: "Error resetting password"
+        });
     }
 };

@@ -37,19 +37,24 @@ exports.login = async (req, res) => {
         const user = await userModel.findOne({ email: email });
 
 
+
         if (!user) {
             return res.status(404).send({
                 status: "fail",
                 message: "User not found"
             });
         }
+
         if(user.isDisable){
             return res.status(403).json({
                 status: "fail",
                 msg: "Your account is disabled. Please contact authority",
             });
         }
-        let matchPassword = bcrypt.compareSync(password, user.password);
+
+        let matchPassword = bcrypt.compare(password, user.password);
+
+
         if (!matchPassword) {
             return res.status(403).json({
                 status: "fail",
