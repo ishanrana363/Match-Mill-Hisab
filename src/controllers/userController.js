@@ -58,11 +58,14 @@ exports.login = async (req, res) => {
         }
         const key = process.env.SECRET_KEY;
         const token = tokenCreate({user}, key, "10d" );
+
         await userModel.updateOne({email : email},{token: token},{new:true});
+        
         return res.status(200).json({
             status: "success",
             token: token,
         });
+
         
     } catch (error) {
         return res.status(500).send({
