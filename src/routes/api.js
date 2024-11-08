@@ -19,7 +19,8 @@ const dailyBazarController = require("../controllers/dailyBazarController");
 const moneyEntryController = require("../controllers/moneyEntryController");
 // former border controller
 const formerBorderController = require("../controllers/formerBorderController");
-
+// forget password controller
+const forgetPasswordController = require("../controllers/otpController");
 // user related api
 router.post("/registration", userController.registration);
 router.post("/login", userController.login);
@@ -66,9 +67,7 @@ router.post("/total-bazar-list", dailyBazarController.totalBazarList);
 
 router.post("/money-entry", moneyEntryController.insertMoneyEntry);
 router.post("/money-calculation", moneyEntryController.moneyCalculation);
-
 router.post("/money-calculation-30days",moneyEntryController.moneyCalculationby30Days);
-
 router.post("/rice-calculation-30days", moneyEntryController.riceCalculationby30Days);
 
 // router.post("/total-money-border", moneyEntryController.findOneBorderTotalMoneyGiven);
@@ -76,6 +75,13 @@ router.post("/rice-calculation-30days", moneyEntryController.riceCalculationby30
 // former border api
 
 router.get("/all-former-border",formerBorderController.allFormerBorder);
+
+// forget password api
+
+router.post("/send-otp", forgetPasswordController.sendMail);
+
+// router.post("/verify-otp", forgetPasswordController.verifyOtp);
+// router.post("/reset-password", forgetPasswordController.resetPassword);
 
 
 
