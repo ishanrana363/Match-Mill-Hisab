@@ -264,26 +264,20 @@ exports.userDelete = async (req, res) => {
 
 exports.disableUserList = async (req, res) => {
     try {
-
         let pageNo = Number(req.params.pageNo);
-
         let perPage = Number(req.params.perPage);
-
         let searchValue = req.params.searchValue ? String(req.params.searchValue) : "";
-
         let skipRow = (pageNo - 1) * perPage;
 
         let data;
 
+        // Search filter
         if (searchValue !== "0" && searchValue !== "") {
             let searchRegex = { "$regex": searchValue, "$options": "i" };
             let searchQuery = { $or: [{ username: searchRegex }, { phone: searchRegex }, { email: searchRegex }] };
+            
             data = await userModel.aggregate([
-                {
-                    $match : {
-                        isDisable : true,
-                    }
-                },
+                { $match: { isDisable: true } },
                 {
                     $facet: {
                         Total: [{ $match: searchQuery }, { $count: "count" }],
@@ -292,12 +286,9 @@ exports.disableUserList = async (req, res) => {
                 }
             ]);
         } else {
+            // No search filter
             data = await userModel.aggregate([
-                {
-                    $match : {
-                        isDisable : true,
-                    }
-                },
+                { $match: { isDisable: true } },
                 {
                     $facet: {
                         Total: [{ $count: "count" }],
@@ -307,14 +298,27 @@ exports.disableUserList = async (req, res) => {
             ]);
         }
 
-        res.status(200).send({
+        // Check for empty results and format the response consistently
+        let totalCount = data[0].Total.length > 0 ? data[0].Total[0].count : 0;
+
+        if (totalCount === 0) {
+            return res.status(404).json({
+                status: "fail",
+                msg: "No user found"
+            });
+        }
+
+        res.status(200).json({
             msg: "User fetched successfully",
             status: "success",
-            data: data
+            data: {
+                Total: totalCount,
+                Rows: data[0].Rows
+            }
         });
     } catch (error) {
-        res.status(500).send({
-            msg: "Failed to fetch border",
+        res.status(500).json({
+            msg: "Failed to fetch users",
             status: "fail",
             error: error.toString()
         });
