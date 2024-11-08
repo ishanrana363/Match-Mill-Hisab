@@ -8,7 +8,6 @@ exports.sendMail = async (req, res) => {
     const otpCode = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
     const emailSubject = "MIll Hisab  OTP Code";
     const emailText = `Your OTP code is ${otpCode}`;
-    const filter = { email };
 
     try {
         const user = await userModel.find({email : email });
