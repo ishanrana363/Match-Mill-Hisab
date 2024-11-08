@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
             });
         }
         const key = process.env.SECRET_KEY;
-        const token = tokenCreate({user}, key, "10d" );
+        const token = tokenCreate({_id : user._id,email:user.email,role:user.role}, key, "10d" );
 
         await userModel.updateOne({email : email},{token: token},{new:true});
         
@@ -112,7 +112,6 @@ exports.updateUser = async (req, res) => {
 exports.userProfile = async (req, res) => {
     try {
         let id = req.headers._id;
-        console.log(id);
         let user = await userModel.findById(id);
         
         // Check if the user was found

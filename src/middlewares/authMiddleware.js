@@ -30,11 +30,11 @@ const isLogIn = (req, res, next) => {
 
 
 
-        let _id = decode.user._id;
+        let _id = decode._id;
         req.headers._id = _id;
-        let email = decode.user.email;
+        let email = decode.email;
         req.headers.email = email;
-        let role = decode.user.role;
+        let role = decode.role;
         req.headers.role = role;
         next();
 
