@@ -325,7 +325,7 @@ exports.enableUser = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const user = await userModel.updateOne(
+        const user = await userModel.findByIdAndUpdate(
             { _id: id, isDisable: true },  
             { isDisable: false },          
             { new: true }                  
