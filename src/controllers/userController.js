@@ -320,3 +320,35 @@ exports.disableUserList = async (req, res) => {
         });
     }
 };
+
+exports.enableUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const user = await userModel.updateOne(
+            { _id: id, isDisable: true },  
+            { isDisable: false },          
+            { new: true }                  
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                status: "fail",
+                msg: "User not found or user is not disabled"
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            msg: "User enabled successfully",
+            data: user
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: "fail",
+            message: "Failed to enable user",
+            error: error.toString()
+        });
+    }
+};
