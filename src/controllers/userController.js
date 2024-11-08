@@ -341,7 +341,6 @@ exports.enableUser = async (req, res) => {
         return res.status(200).json({
             status: "success",
             msg: "User enabled successfully",
-            data: user
         });
 
     } catch (error) {
