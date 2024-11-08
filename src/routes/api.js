@@ -80,7 +80,8 @@ router.get("/all-former-border",formerBorderController.allFormerBorder);
 
 router.post("/send-otp", forgetPasswordController.sendMail);
 
-// router.post("/verify-otp", forgetPasswordController.verifyOtp);
+router.post("/verify-otp", forgetPasswordController.verifyOtp);
+
 // router.post("/reset-password", forgetPasswordController.resetPassword);
 
 

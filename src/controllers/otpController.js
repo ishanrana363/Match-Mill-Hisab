@@ -40,3 +40,30 @@ exports.sendMail = async (req, res) => {
         });
     }
 }
+
+exports.verifyOtp = async (req, res) => {
+    let email = req.body.email;
+    let status = 0;
+    let otpCode = req.body.otp;
+    let statusUpdate = 1;
+    try {
+        let result = await otpModel.findOne({ email: email, otp: otpCode, status: status });
+        if (result) {
+            await otpModel.findOneAndUpdate({ email: email, otp: otpCode, status: status }, { status: statusUpdate });
+            return res.status(200).json({
+                status: "success",
+                msg: "Otp verification successfully",
+            })
+        } else {
+            return res.status(404).json({
+                status: "fail",
+                msg: "Otp not found"
+            })
+        }
+    } catch (e) {
+        res.status(500).json({
+            status: "fail",
+            msg: "Something went wrong"
+        })
+    }
+};
